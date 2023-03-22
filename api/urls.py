@@ -3,21 +3,21 @@ from rest_framework.routers import DefaultRouter
 
 from .views import CommentViewSet, FollowViewSet, GroupViewSet, PostViewSet
 
-router = DefaultRouter()
+router_v1 = DefaultRouter()
 
-router.register(
+router_v1.register(
     'posts', PostViewSet, basename='posts'
 )
-router.register(
+router_v1.register(
     'posts/(?P<post_id>\\d+)/comments', CommentViewSet, basename='comments'
 )
-router.register(
+router_v1.register(
     'follow', FollowViewSet, basename='follow'
 )
-router.register(
+router_v1.register(
     'groups', GroupViewSet, basename='groups'
 )
 
 urlpatterns = [
-    path('v1/', include(router.urls)),
+    path('v1/', include(router_v1.urls)),
 ]

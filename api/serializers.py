@@ -22,7 +22,7 @@ class PostSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField(required=False, allow_null=True)
 
-    class Meta():
+    class Meta:
         model = Post
         fields = '__all__'
 
@@ -40,7 +40,7 @@ class CommentSerializer(serializers.ModelSerializer):
         slug_field='username'
     )
 
-    class Meta():
+    class Meta:
         model = Comment
         fields = '__all__'
         read_only_fields = ('post',)
@@ -57,12 +57,16 @@ class FollowSerializer(serializers.ModelSerializer):
         slug_field='username',
     )
 
-    class Meta():
+    # Если уникальность пары значений прописана в модели через unique_together,
+    # можно оставить сериалайзер без изменений, верно?
+    class Meta:
         model = Follow
         fields = ('user', 'following')
 
-    def validate(self, data):
-        if data['user'] == data['following']:
+    def validate_following(self, value):
+        user = self.context['request'].user
+        if user == value:
             raise serializers.ValidationError(
-                'Пользователь не может совпадать с подписчиком!')
-        return data
+                'Пользователь не может совпадать с подписчиком!'
+            )
+        return value
